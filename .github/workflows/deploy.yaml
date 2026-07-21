@@ -1,35 +1,13 @@
-name: Build and Push
-
-on:
-  push:
-    branches: [main]
-
-permissions:
-  id-token: write
-  contents: read
-
-env:
-  AWS_REGION: us-east-1
-  ECR_REPO: eks-lab
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
+      - name: Debug OIDC claim
+        run: echo "sub would be -> repo:${{ github.repository }}:ref:${{ github.ref }}"
+
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
-
-      - uses: aws-actions/amazon-ecr-login@v2
-        id: ecr
-
-      - name: Build and push
-        env:
-          REGISTRY: ${{ steps.ecr.outputs.registry }}
-        run: |
-          docker build -t $REGISTRY/$ECR_REPO:${{ github.sha }} -t $REGISTRY/$ECR_REPO:latest .
-          docker push $REGISTRY/$ECR_REPO:${{ github.sha }}
-          docker push $REGISTRY/$ECR_REPO:latest
