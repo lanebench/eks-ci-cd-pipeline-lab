@@ -32,4 +32,3 @@ jobs:
           REGISTRY: ${{ steps.ecr.outputs.registry }}
         run: |
           docker build -t $REGISTRY/$ECR_REPO:${{ github.sha }} -t $REGISTRY/$ECR_REPO:latest .
-      - run: echo "${{ secrets.AWS_ROLE_ARN }}" | grep -o 'role/.*'
