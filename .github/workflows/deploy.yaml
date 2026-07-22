@@ -32,3 +32,5 @@ jobs:
           REGISTRY: ${{ steps.ecr.outputs.registry }}
         run: |
           docker build -t $REGISTRY/$ECR_REPO:${{ github.sha }} -t $REGISTRY/$ECR_REPO:latest .
+          docker push $REGISTRY/$ECR_REPO:${{ github.sha }}
+          docker push $REGISTRY/$ECR_REPO:latest
